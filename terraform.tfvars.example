@@ -1,3 +1,3 @@
-agent_id              = "GVZHZDL5LC"
+agent_id              = "AGENTID"
 s3_bucket             = "your-bucket-name"
-agent_alias_id        = "TSTALIASID"
+agent_alias_id        = "ALIASID"

@@ -1,10 +1,9 @@
-# Chat
+# Chat POC
 
 - Python
 - AWS Lambda Function
+- Terraform
 
-
-- For prod lambda, dynamodb, etc
 ```sh
 terraform init --upgrade # as needed
 terraform plan
@@ -12,7 +11,7 @@ terraform plan
 
 And then
 ```sh
-# Using default terraform.tfvars
+# Using default values, given terraform.tfvars
 terraform apply
 
 # Or
