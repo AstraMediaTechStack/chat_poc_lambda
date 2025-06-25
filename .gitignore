@@ -7,4 +7,6 @@ build/
 .aws-sam/
 
 terraform.tfstate*
-agent_manager.zip
+lambda_function.zip
+
+*.tfvars

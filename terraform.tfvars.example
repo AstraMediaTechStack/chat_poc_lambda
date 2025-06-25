@@ -1,0 +1,3 @@
+agent_id              = "GVZHZDL5LC"
+s3_bucket             = "your-bucket-name"
+agent_alias_id        = "TSTALIASID"
