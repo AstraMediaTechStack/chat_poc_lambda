@@ -1,0 +1,10 @@
+__pycache__/
+
+.venv/
+build/
+
+.terraform/
+.aws-sam/
+
+terraform.tfstate*
+agent_manager.zip
