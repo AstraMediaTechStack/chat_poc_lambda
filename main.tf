@@ -98,20 +98,20 @@ data "archive_file" "lambda_zip" {
   output_path = "lambda_function.zip"
 
   source {
-    content = file("${path.module}/poc/lambda_function.py")
+    content  = file("${path.module}/poc/lambda_function.py")
     filename = "lambda_function.py"
   }
 }
 
 # Lambda function
 resource "aws_lambda_function" "bedrock_lambda" {
-  filename         = data.archive_file.lambda_zip.output_path
-  function_name    = var.lambda_function_name
-  role            = aws_iam_role.lambda_role.arn
-  handler         = "lambda_function.lambda_handler"
-  runtime         = "python3.11"
-  timeout         = 60
-  memory_size     = 256
+  filename      = data.archive_file.lambda_zip.output_path
+  function_name = var.lambda_function_name
+  role          = aws_iam_role.lambda_role.arn
+  handler       = "lambda_function.lambda_handler"
+  runtime       = "python3.11"
+  timeout       = 60
+  memory_size   = 256
 
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
@@ -120,7 +120,7 @@ resource "aws_lambda_function" "bedrock_lambda" {
       S3_BUCKET              = var.s3_bucket
       BEDROCK_AGENT_ID       = var.agent_id
       BEDROCK_AGENT_ALIAS_ID = var.agent_alias_id
-      SESSION_ID            = "default-session"
+      SESSION_ID             = "default-session"
     }
   }
 
@@ -144,10 +144,10 @@ resource "aws_lambda_function_url" "bedrock_lambda_url" {
   cors {
     allow_credentials = false
     allow_origins     = ["*"]
-    allow_methods     = ["POST", "OPTIONS"]
+    allow_methods     = ["POST"]
     allow_headers     = ["date", "keep-alive", "content-type", "x-requested-with"]
     expose_headers    = ["date", "keep-alive"]
-    max_age          = 86400
+    max_age           = 86400
   }
 }
 
