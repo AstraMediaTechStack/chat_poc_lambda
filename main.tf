@@ -74,6 +74,11 @@ resource "aws_iam_policy" "lambda_policy" {
         ]
       },
       {
+          "Effect": "Allow",
+          "Action": "s3:ListBucket",
+          "Resource": "arn:aws:s3:::${var.s3_bucket}"
+      },
+      {
         Effect = "Allow"
         Action = [
           "s3:GetObject"
