@@ -1,15 +1,5 @@
-variable "agent_id" {
-  description = "Bedrock Agent ID"
-  type        = string
-}
-
 variable "s3_bucket" {
   description = "S3 bucket for file storage"
-  type        = string
-}
-
-variable "agent_alias_id" {
-  description = "Bedrock Agent Alias ID"
   type        = string
 }
 
@@ -69,14 +59,14 @@ resource "aws_iam_policy" "lambda_policy" {
           "bedrock:InvokeAgent"
         ]
         Resource = [
-          "arn:aws:bedrock:${var.aws_region}:${data.aws_caller_identity.current.account_id}:agent/${var.agent_id}",
-          "arn:aws:bedrock:${var.aws_region}:${data.aws_caller_identity.current.account_id}:agent-alias/${var.agent_id}/${var.agent_alias_id}"
+          "arn:aws:bedrock:${var.aws_region}:${data.aws_caller_identity.current.account_id}:agent/*",
+          "arn:aws:bedrock:${var.aws_region}:${data.aws_caller_identity.current.account_id}:agent-alias/*/*"
         ]
       },
       {
-          "Effect": "Allow",
-          "Action": "s3:ListBucket",
-          "Resource": "arn:aws:s3:::${var.s3_bucket}"
+        Effect   = "Allow"
+        Action   = "s3:ListBucket"
+        Resource = "arn:aws:s3:::${var.s3_bucket}"
       },
       {
         Effect = "Allow"
@@ -122,10 +112,8 @@ resource "aws_lambda_function" "bedrock_lambda" {
 
   environment {
     variables = {
-      S3_BUCKET              = var.s3_bucket
-      BEDROCK_AGENT_ID       = var.agent_id
-      BEDROCK_AGENT_ALIAS_ID = var.agent_alias_id
-      SESSION_ID             = "default-session"
+      S3_BUCKET  = var.s3_bucket
+      SESSION_ID = "default-session"
     }
   }
 

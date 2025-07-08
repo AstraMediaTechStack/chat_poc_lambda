@@ -9,6 +9,21 @@ def lambda_handler(event, context):
         user_message = body['message']
         file_key = body.get('file_key')
 
+        # Get agent configuration from request body
+        agent_id = body.get('agent_id', 'TVYPVXUSNL')
+        agent_alias_id = body.get('agent_alias_id', 'EZGEAFLEFP')  # Default fallback
+
+        # Validate required parameters
+        if not agent_id:
+            return {
+                'statusCode': 400,
+                'headers': {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                'body': json.dumps({'error': 'agent_id is required'})
+            }
+
         # Initialize Bedrock agent client
         bedrock_agent = boto3.client('bedrock-agent-runtime')
 
@@ -18,8 +33,8 @@ def lambda_handler(event, context):
             file_content = get_file_content(file_key)
             enhanced_message = f"File content:\n{file_content}\n\nUser question: {user_message}"
 
-        # Invoke Bedrock Agent
-        ai_response = invoke_bedrock_agent(bedrock_agent, enhanced_message)
+        # Invoke Bedrock Agent with dynamic configuration
+        ai_response = invoke_bedrock_agent(bedrock_agent, enhanced_message, agent_id, agent_alias_id)
 
         return {
             'statusCode': 200,
@@ -31,11 +46,14 @@ def lambda_handler(event, context):
                 'response': ai_response
             })
         }
-
     except Exception as e:
         print(f"Error: {str(e)}")
         return {
             'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            },
             'body': json.dumps({'error': str(e)})
         }
 
@@ -52,11 +70,9 @@ def get_file_content(file_key: str) -> str:
         print(f"Error reading file: {str(e)}")
         return f"Error reading file: {str(e)}"
 
-def invoke_bedrock_agent(bedrock_agent, message: str) -> str:
-    """Invoke Bedrock Agent"""
+def invoke_bedrock_agent(bedrock_agent, message: str, agent_id: str, agent_alias_id: str) -> str:
+    """Invoke Bedrock Agent with dynamic agent configuration"""
     try:
-        agent_id = os.environ['BEDROCK_AGENT_ID']
-        agent_alias_id = os.environ.get('BEDROCK_AGENT_ALIAS_ID', 'TSTALIASID')
         session_id = os.environ.get('SESSION_ID', 'default-session')
 
         response = bedrock_agent.invoke_agent(
@@ -69,7 +85,6 @@ def invoke_bedrock_agent(bedrock_agent, message: str) -> str:
         # Parse the streaming response
         event_stream = response['completion']
         full_response = ""
-
         for event in event_stream:
             if 'chunk' in event:
                 chunk = event['chunk']
@@ -77,7 +92,6 @@ def invoke_bedrock_agent(bedrock_agent, message: str) -> str:
                     full_response += chunk['bytes'].decode('utf-8')
 
         return full_response.strip()
-
     except Exception as e:
         print(f"Error invoking Bedrock Agent: {str(e)}")
         raise e
