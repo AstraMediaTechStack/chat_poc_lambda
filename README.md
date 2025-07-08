@@ -16,5 +16,8 @@ terraform apply
 
 # Or
 terraform apply \
-  -var="agent_id=..." -var="agent_alias_id=..." -var="s3_bucket=..."
+  -var="s3_bucket=..."
+
+terraform output lambda_function_url
 ```
+
