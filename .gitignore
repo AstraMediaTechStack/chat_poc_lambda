@@ -10,3 +10,4 @@ terraform.tfstate*
 lambda_function.zip
 
 *.tfvars
+.idea/

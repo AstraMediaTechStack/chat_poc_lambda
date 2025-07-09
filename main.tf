@@ -56,12 +56,11 @@ resource "aws_iam_policy" "lambda_policy" {
       {
         Effect = "Allow"
         Action = [
-          "bedrock:InvokeAgent"
+          "bedrock:InvokeAgent",
+          "bedrock:GetInferenceProfile",
+          "bedrock:ListInferenceProfiles"
         ]
-        Resource = [
-          "arn:aws:bedrock:${var.aws_region}:${data.aws_caller_identity.current.account_id}:agent/*",
-          "arn:aws:bedrock:${var.aws_region}:${data.aws_caller_identity.current.account_id}:agent-alias/*/*"
-        ]
+        Resource = "*"
       },
       {
         Effect   = "Allow"
