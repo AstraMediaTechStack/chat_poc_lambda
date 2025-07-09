@@ -112,7 +112,6 @@ resource "aws_lambda_function" "bedrock_lambda" {
   environment {
     variables = {
       S3_BUCKET  = var.s3_bucket
-      SESSION_ID = "default-session"
     }
   }
 
